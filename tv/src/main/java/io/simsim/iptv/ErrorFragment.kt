@@ -2,7 +2,6 @@ package io.simsim.iptv
 
 import android.os.Bundle
 import android.view.View
-
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.ErrorSupportFragment
 

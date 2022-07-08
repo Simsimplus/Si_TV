@@ -54,7 +54,6 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun prepareBackgroundManager() {
-
         mBackgroundManager = BackgroundManager.getInstance(activity)
         mBackgroundManager.attach(requireActivity().window)
         mDefaultBackground = ContextCompat.getDrawable(requireActivity(), R.drawable.default_background)
@@ -120,7 +119,6 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-
             if (item is Movie) {
                 Log.d(TAG, "Item: $item")
                 val intent = Intent(requireActivity(), DetailsActivity::class.java)
@@ -146,8 +144,10 @@ class MainFragment : BrowseSupportFragment() {
 
     private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
         override fun onItemSelected(
-            itemViewHolder: Presenter.ViewHolder?, item: Any?,
-            rowViewHolder: RowPresenter.ViewHolder, row: Row
+            itemViewHolder: Presenter.ViewHolder?,
+            item: Any?,
+            rowViewHolder: RowPresenter.ViewHolder,
+            row: Row
         ) {
             if (item is Movie) {
                 mBackgroundUri = item.backgroundImageUrl
@@ -163,7 +163,7 @@ class MainFragment : BrowseSupportFragment() {
             .load(uri)
             .centerCrop()
             .error(mDefaultBackground)
-            .into(object :CustomTarget<Drawable>(width, height){
+            .into(object : CustomTarget<Drawable>(width, height) {
                 override fun onResourceReady(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
@@ -174,7 +174,6 @@ class MainFragment : BrowseSupportFragment() {
                 override fun onLoadCleared(placeholder: Drawable?) {
                     //
                 }
-
             })
         mBackgroundTimer?.cancel()
     }

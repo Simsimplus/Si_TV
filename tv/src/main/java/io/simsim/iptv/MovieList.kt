@@ -10,12 +10,12 @@ object MovieList {
         "Category Five"
     )
 
-    val list: List<Movie> by lazy {
+    val list: MutableList<Movie> by lazy {
         setupMovies()
     }
     private var count: Long = 0
 
-    private fun setupMovies(): List<Movie> {
+    private fun setupMovies(): MutableList<Movie> {
         val title = arrayOf(
             "Zeitgeist 2010_ Year in Review",
             "Google Demo Slam_ 20ft Search",
@@ -68,7 +68,7 @@ object MovieList {
                 cardImageUrl[it],
                 bgImageUrl[it]
             )
-        }
+        }.toMutableList()
 
         return list
     }

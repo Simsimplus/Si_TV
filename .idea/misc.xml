@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/61960/AndroidStudioProjects/demos/SimTV/tv/src/main/res/layout/activity_base__fragment_host.xml" value="0.21875" />
+        <entry key="..\:/Users/61960/AndroidStudioProjects/demos/SimTV/tv/src/main/res/layout/activity_details.xml" value="0.21875" />
         <entry key="..\:/Users/61960/AndroidStudioProjects/demos/SimTV/tv/src/main/res/layout/activity_main.xml" value="0.21875" />
+        <entry key="..\:/Users/61960/AndroidStudioProjects/demos/SimTV/tv/src/main/res/layout/fragment_watch.xml" value="0.21875" />
       </map>
     </option>
   </component>
