@@ -1,4 +1,4 @@
-package io.simsim.iptv
+package io.simsim.iptv.ui.detail
 
 import android.content.Context
 import android.content.Intent
@@ -15,6 +15,13 @@ import androidx.leanback.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import io.simsim.iptv.Movie
+import io.simsim.iptv.MovieList
+import io.simsim.iptv.PlaybackActivity
+import io.simsim.iptv.R
+import io.simsim.iptv.ui.main.MainActivity
+import io.simsim.iptv.ui.presenter.CardPresenter
+import io.simsim.iptv.ui.presenter.DetailsDescriptionPresenter
 import kotlin.math.roundToInt
 
 /**

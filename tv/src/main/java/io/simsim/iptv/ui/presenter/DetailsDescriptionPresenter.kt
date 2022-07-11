@@ -1,6 +1,7 @@
-package io.simsim.iptv
+package io.simsim.iptv.ui.presenter
 
 import androidx.leanback.widget.AbstractDetailsDescriptionPresenter
+import io.simsim.iptv.Movie
 
 class DetailsDescriptionPresenter : AbstractDetailsDescriptionPresenter() {
 

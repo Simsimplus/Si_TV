@@ -1,4 +1,4 @@
-package io.simsim.iptv
+package io.simsim.iptv.ui.main
 
 import io.simsim.iptv.base.BaseFragmentHostActivity
 

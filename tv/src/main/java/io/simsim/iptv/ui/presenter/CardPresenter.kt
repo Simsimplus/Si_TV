@@ -1,4 +1,4 @@
-package io.simsim.iptv
+package io.simsim.iptv.ui.presenter
 
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
+import io.simsim.iptv.R
 import io.simsim.iptv.utils.M3u8Item
 import kotlin.properties.Delegates
 

@@ -59,6 +59,9 @@ dependencies {
     // serialize
     implementation(KotlinX.serialization.core)
 
+    // splitties
+    implementation(Splitties.pack.androidMdcWithViewsDsl)
+
     // test
     testImplementation(Testing.junit4)
     androidTestImplementation(AndroidX.test.espresso.core)

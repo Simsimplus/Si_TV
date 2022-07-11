@@ -1,4 +1,4 @@
-package io.simsim.iptv
+package io.simsim.iptv.ui.main
 
 import android.content.Intent
 import android.graphics.Color
@@ -15,14 +15,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import io.simsim.iptv.BrowseErrorActivity
+import io.simsim.iptv.Movie
+import io.simsim.iptv.R
+import io.simsim.iptv.ui.detail.DetailsActivity
+import io.simsim.iptv.ui.presenter.CardPresenter
 import io.simsim.iptv.utils.M3u8Item
-import io.simsim.iptv.utils.M3u8Parser
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -31,18 +39,20 @@ import java.util.*
 class MainFragment : BrowseSupportFragment() {
 
     private val mHandler = Handler(Looper.myLooper()!!)
+    private val vm: MainViewModel by viewModels()
     private lateinit var mBackgroundManager: BackgroundManager
     private var mDefaultBackground: Drawable? = null
     private lateinit var mMetrics: DisplayMetrics
     private var mBackgroundTimer: Timer? = null
     private var mBackgroundUri: String? = null
-    private val m3uList by lazy {
-        M3u8Parser.parse(resources.assets.open("ggtv.m3u"))
-    }
+    private val m3uList = mutableListOf<M3u8Item>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onViewCreated(view, savedInstanceState)
+
+        observeVm()
+
         prepareBackgroundManager()
 
         setupUIElements()
@@ -50,6 +60,17 @@ class MainFragment : BrowseSupportFragment() {
         loadRows()
 
         setupEventListeners()
+    }
+
+    private fun observeVm() {
+        lifecycleScope.launch {
+            vm.mainState.collectLatest {
+                if (it is MainState.Success) {
+                    m3uList.addAll(it.list)
+                    loadRows()
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -61,7 +82,10 @@ class MainFragment : BrowseSupportFragment() {
     private fun prepareBackgroundManager() {
         mBackgroundManager = BackgroundManager.getInstance(activity)
         mBackgroundManager.attach(requireActivity().window)
-        mDefaultBackground = ContextCompat.getDrawable(requireActivity(), R.drawable.default_background)
+        mDefaultBackground = ContextCompat.getDrawable(
+            requireActivity(),
+            R.drawable.default_background
+        )
         mMetrics = requireContext().resources.displayMetrics
     }
 
@@ -207,7 +231,12 @@ class MainFragment : BrowseSupportFragment() {
             view.layoutParams = ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT)
             view.isFocusable = true
             view.isFocusableInTouchMode = true
-            view.setBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.default_background))
+            view.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.default_background
+                )
+            )
             view.setTextColor(Color.WHITE)
             view.gravity = Gravity.CENTER
             return ViewHolder(view)
