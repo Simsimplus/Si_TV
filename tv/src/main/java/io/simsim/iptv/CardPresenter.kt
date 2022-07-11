@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
-import com.bumptech.glide.Glide
+import io.simsim.iptv.utils.M3u8Item
 import kotlin.properties.Delegates
 
 /**
@@ -40,20 +40,24 @@ class CardPresenter : Presenter() {
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-        val movie = item as Movie
+        val m3u8Item = item as M3u8Item
         val cardView = viewHolder.view as ImageCardView
 
         Log.d(TAG, "onBindViewHolder")
-        if (movie.cardImageUrl != null) {
-            cardView.titleText = movie.title
-            cardView.contentText = movie.studio
-            cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
-            Glide.with(viewHolder.view.context)
-                .load(movie.cardImageUrl)
-                .centerCrop()
-                .error(mDefaultCardImage)
-                .into(cardView.mainImageView)
-        }
+        cardView.titleText = m3u8Item.info.name
+        cardView.contentText = m3u8Item.info.name
+        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+        cardView.mainImageView.setImageDrawable(mDefaultCardImage)
+//        if (m3u8Item.info.logoUrl.isNotBlank()) {
+//            cardView.titleText = m3u8Item.title
+//            cardView.contentText = m3u8Item.studio
+//            cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+//            Glide.with(viewHolder.view.context)
+//                .load(m3u8Item.cardImageUrl)
+//                .centerCrop()
+//                .error(mDefaultCardImage)
+//                .into(cardView.mainImageView)
+//        }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {

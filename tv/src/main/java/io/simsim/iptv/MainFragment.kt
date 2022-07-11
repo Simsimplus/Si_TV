@@ -21,6 +21,8 @@ import androidx.leanback.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import io.simsim.iptv.utils.M3u8Item
+import io.simsim.iptv.utils.M3u8Parser
 import java.util.*
 
 /**
@@ -34,6 +36,9 @@ class MainFragment : BrowseSupportFragment() {
     private lateinit var mMetrics: DisplayMetrics
     private var mBackgroundTimer: Timer? = null
     private var mBackgroundUri: String? = null
+    private val m3uList by lazy {
+        M3u8Parser.parse(resources.assets.open("ggtv.m3u"))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
@@ -73,20 +78,17 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun loadRows() {
-        val list = MovieList.list.toMutableList()
+        val list = m3uList.chunked(NUM_COLS)
 
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         val cardPresenter = CardPresenter()
 
-        for (i in 0 until NUM_ROWS) {
-            if (i != 0) {
-                list.shuffle()
-            }
+        list.forEachIndexed { index, group ->
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-            for (j in 0 until NUM_COLS) {
-                listRowAdapter.add(list[j % 5])
+            group.forEach { item ->
+                listRowAdapter.add(item)
             }
-            val header = HeaderItem(i.toLong(), MovieList.MOVIE_CATEGORY[i])
+            val header = HeaderItem(index.toLong(), "tv[$index]")
             rowsAdapter.add(ListRow(header, listRowAdapter))
         }
 
@@ -119,24 +121,32 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-            if (item is Movie) {
-                Log.d(TAG, "Item: $item")
-                val intent = Intent(requireActivity(), DetailsActivity::class.java)
-                intent.putExtra(DetailsActivity.MOVIE, item)
-
-                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    requireActivity(),
-                    (itemViewHolder.view as ImageCardView).mainImageView,
-                    DetailsActivity.SHARED_ELEMENT_NAME
-                )
-                    .toBundle()
-                startActivity(intent, bundle)
-            } else if (item is String) {
-                if (item.contains(getString(R.string.error_fragment))) {
-                    val intent = Intent(requireActivity(), BrowseErrorActivity::class.java)
+            when (item) {
+                is M3u8Item -> {
+                    val intent = Intent(requireActivity(), DetailsActivity::class.java)
+                    intent.putExtra(DetailsActivity.MOVIE, item)
                     startActivity(intent)
-                } else {
-                    Toast.makeText(requireActivity(), item, Toast.LENGTH_SHORT).show()
+                }
+                is Movie -> {
+                    Log.d(TAG, "Item: $item")
+                    val intent = Intent(requireActivity(), DetailsActivity::class.java)
+                    intent.putExtra(DetailsActivity.MOVIE, item)
+
+                    val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        requireActivity(),
+                        (itemViewHolder.view as ImageCardView).mainImageView,
+                        DetailsActivity.SHARED_ELEMENT_NAME
+                    )
+                        .toBundle()
+                    startActivity(intent, bundle)
+                }
+                is String -> {
+                    if (item.contains(getString(R.string.error_fragment))) {
+                        val intent = Intent(requireActivity(), BrowseErrorActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(requireActivity(), item, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -217,6 +227,6 @@ class MainFragment : BrowseSupportFragment() {
         private const val GRID_ITEM_WIDTH = 200
         private const val GRID_ITEM_HEIGHT = 200
         private const val NUM_ROWS = 6
-        private const val NUM_COLS = 15
+        private const val NUM_COLS = 30
     }
 }
